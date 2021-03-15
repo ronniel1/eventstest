@@ -38,13 +38,13 @@ x-events:
         api_vip: string
         ingress_vip: string
 
-  - name: cluster_vip_removed
-    id: "AI000001"
-    message: "Vip {vip_id} was removed from cluster"
-    event_type: cluster
+  - name: host_vip_updated
+    id: "AI000002"
+    message: "Vip {num} was removed from host"
+    event_type: host
     severity: "info"
     properties:
-        vip: string
+        num:  integer
 
 schemes:
   - http

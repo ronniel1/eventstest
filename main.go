@@ -1,13 +1,16 @@
 package main
 
 import (
-	"fmt"
 	events "github.com/ronniel1/eventstest/event"
+	eventslib "github.com/ronniel1/eventstest/events"
 )
 
 func main() {
-	ev := events.NewClusterVipUpdateEvent("my-vip-ip", "my-ingress-ip")
-	fmt.Printf("eventID %s: %s\n", ev.GetEventBase().Id, ev.FormatMessage())
+	var ev eventslib.ClusterEvent
+	ev = events.NewClusterVipUpdateEvent("my-vip-ip", "my-ingress-ip")
+	sender := eventslib.PrintSender{}
+	sender.SendClusterEvent("cluster1", ev)
+	sender.SendHostEvent("cluster2", "host-10", events.NewHostVipUpdatedEvent(66))
 }
 
 /*

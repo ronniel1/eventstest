@@ -2,78 +2,75 @@
 package event
 
 import (
-    eventslib "github.com/ronniel1/eventstest/events"
-    "strings"
+	"fmt"
+	eventslib "github.com/ronniel1/eventstest/events"
+	"strings"
 )
-
 
 //
 // Event cluster_vip_update
 //
-
 type ClusterVipUpdateEvent struct {
-    eventslib.EventBase
-    ApiVip string
-    IngressVip string
+	eventslib.ClusterBaseEvent
+	ApiVip     string
+	IngressVip string
 }
 
 func NewClusterVipUpdateEvent(
-    apiVip string,
-    ingressVip string,
+	apiVip string,
+	ingressVip string,
 ) *ClusterVipUpdateEvent {
-    return &ClusterVipUpdateEvent {
-		EventBase: eventslib.EventBase {
+	return &ClusterVipUpdateEvent{
+		ClusterBaseEvent: eventslib.ClusterBaseEvent{
 			Format:   "Cluster was updated with api-vip {api_vip}, ingress-vip {ingress_vip}",
 			Id:       "AI000001",
-			Type:     eventslib.EventTypeCluster,
 			Severity: eventslib.EventSeverityInfo,
 		},
-        ApiVip: apiVip,
-        IngressVip: ingressVip,
-    }
+		ApiVip:     apiVip,
+		IngressVip: ingressVip,
+	}
 }
 
-func (e *ClusterVipUpdateEvent) GetEventBase() *eventslib.EventBase {
-    return &e.EventBase
+func (e *ClusterVipUpdateEvent) GetBaseEvent() *eventslib.ClusterBaseEvent {
+	return &e.ClusterBaseEvent
 }
 
 func (e *ClusterVipUpdateEvent) FormatMessage() string {
-    r := strings.NewReplacer(
-    "{{ api_vip }}", e.ApiVip,
-    "{{ ingress_vip }}", e.IngressVip,
-                  )
-          return r.Replace(e.EventBase.Format)
-}
-//
-// Event cluster_vip_removed
-//
-
-type ClusterVipRemovedEvent struct {
-    eventslib.EventBase
-    Vip string
+	r := strings.NewReplacer(
+		"{api_vip}", fmt.Sprint(e.ApiVip),
+		"{ingress_vip}", fmt.Sprint(e.IngressVip),
+	)
+	return r.Replace(e.ClusterBaseEvent.Format)
 }
 
-func NewClusterVipRemovedEvent(
-    vip string,
-) *ClusterVipRemovedEvent {
-    return &ClusterVipRemovedEvent {
-		EventBase: eventslib.EventBase {
-			Format:   "Vip {vip_id} was removed from cluster",
-			Id:       "AI000001",
-			Type:     eventslib.EventTypeCluster,
+//
+// Event host_vip_updated
+//
+type HostVipUpdatedEvent struct {
+	eventslib.HostBaseEvent
+	Num int
+}
+
+func NewHostVipUpdatedEvent(
+	num int,
+) *HostVipUpdatedEvent {
+	return &HostVipUpdatedEvent{
+		HostBaseEvent: eventslib.HostBaseEvent{
+			Format:   "Vip {num} was removed from host",
+			Id:       "AI000002",
 			Severity: eventslib.EventSeverityInfo,
 		},
-        Vip: vip,
-    }
+		Num: num,
+	}
 }
 
-func (e *ClusterVipRemovedEvent) GetEventBase() *eventslib.EventBase {
-    return &e.EventBase
+func (e *HostVipUpdatedEvent) GetBaseEvent() *eventslib.HostBaseEvent {
+	return &e.HostBaseEvent
 }
 
-func (e *ClusterVipRemovedEvent) FormatMessage() string {
-    r := strings.NewReplacer(
-    "{{ vip }}", e.Vip,
-                  )
-          return r.Replace(e.EventBase.Format)
+func (e *HostVipUpdatedEvent) FormatMessage() string {
+	r := strings.NewReplacer(
+		"{num}", fmt.Sprint(e.Num),
+	)
+	return r.Replace(e.HostBaseEvent.Format)
 }
